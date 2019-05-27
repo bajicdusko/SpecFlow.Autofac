@@ -18,6 +18,8 @@ namespace SpecFlow.Autofac
     {
         private static Object _registrationLock = new Object();
 
+        public static ILifetimeScope Scope;
+
         public void Initialize(RuntimePluginEvents runtimePluginEvents, RuntimePluginParameters runtimePluginParameters, UnitTestProviderConfiguration unitTestProviderConfiguration)
         {
             runtimePluginEvents.CustomizeGlobalDependencies += (sender, args) =>
@@ -50,7 +52,9 @@ namespace SpecFlow.Autofac
                     var containerBuilder = createScenarioContainerBuilder();
                     RegisterSpecflowDependecies(args.ObjectContainer, containerBuilder);
                     var container = containerBuilder.Build();
-                    return container.BeginLifetimeScope();
+                    var scope = container.BeginLifetimeScope();
+                    AutofacPlugin.Scope = scope;
+                    return scope;
                 });
             };
         }
